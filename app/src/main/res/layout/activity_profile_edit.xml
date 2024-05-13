@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    tools:context=".ui.ProfileEditActivity">
+
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/img_upload_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+    <TextView
+        style="@style/TextView.PoppinsSemibold12sp999999"
+        android:layout_width="match_parent"
+        android:textAlignment="textStart"
+        android:layout_height="wrap_content"
+        android:text="Edit" />
+
+    <EditText
+        android:id="@+id/etName"
+        style="@style/EditText.PoppinsSemibold10sp020202"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:hint="Name"></EditText>
+
+    <EditText
+        android:id="@+id/etEmail"
+        style="@style/EditText.PoppinsSemibold10sp020202"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:hint="Email"></EditText>
+
+    <Spinner
+        style="@style/Spinner.PoppinsSemibold10sp020202"
+        android:id="@+id/spinGender"
+        android:layout_marginTop="10dp"
+        android:layout_height="44dp"
+        android:layout_width="match_parent"  />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal"
+        tools:layout_editor_absoluteX="20dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btConfirm"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_button_primary"
+                android:text="Confirm"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.appcompat.widget.AppCompatButton>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btCancel"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/shape_button_danger"
+                android:text="Cancel"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/btConfirm"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.appcompat.widget.AppCompatButton>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</LinearLayout>
