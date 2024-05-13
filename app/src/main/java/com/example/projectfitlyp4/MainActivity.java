@@ -1,6 +1,8 @@
 package com.example.projectfitlyp4;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 
 import android.app.DatePickerDialog;
@@ -32,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     EditText etDate, etWeight, etHeight;
     TextView tvWeight, tvHeight, tvBMI, tvClassification, tvDateView;
     AppDatabase appDatabase;
-    BarChart barChart;
     ArrayList<String> datesList = new ArrayList<>();
     int counter = 1;
     boolean dataEnteredToday = false;
@@ -79,17 +80,34 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btViewAll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ViewHistoryDetail.class);
-                startActivity(intent);
+                displayHistoryFragment();
             }
         });
 
-        // Configure chart
-        barChart = findViewById(R.id.bar_chart);
-        setupChart();
+        findViewById(R.id.btViewChart).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayBarChartFragment();
+            }
+        });
 
-        // Buat dan jalankan AsyncTask untuk mengambil data dari database
         new LoadDataFromDatabaseTask().execute();
+    }
+
+    private void displayHistoryFragment() {
+        HistoryFragment fragment = new HistoryFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void displayBarChartFragment() {
+        BarChartFragment fragment = new BarChartFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void showDatePicker() {
@@ -137,9 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 tvClassification.setText("Overweight");
             }
 
-            // Insert data into database
             insertDataIntoDatabase(weight, height, bmi, date);
-            addChartEntry(bmi);
             tvDateView.setText("Date: " + date);
             dataEnteredToday = true;
         } else {
@@ -171,63 +187,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupChart() {
-        ArrayList<BarEntry> barEntries = new ArrayList<>();
-        BarDataSet barDataSet = new BarDataSet(barEntries, "BMI");
-        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        barDataSet.setDrawValues(false);
-
-        BarData barData = new BarData(barDataSet);
-        barChart.setData(barData);
-        barChart.animateY(5000);
-        barChart.getDescription().setText("BMI LOG");
-
-        // Set fixed size for X-axis
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(11f);
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(datesList));
-    }
-
-    private void addChartEntry(double bmi) {
-        BarData barData = barChart.getData();
-        if (barData != null) {
-            BarDataSet barDataSet = (BarDataSet) barData.getDataSetByIndex(0);
-            if (barDataSet != null) {
-                int index = counter;
-                barDataSet.addEntry(new BarEntry(index, (float) bmi));
-                barData.notifyDataChanged();
-                barChart.notifyDataSetChanged();
-                barChart.invalidate();
-                counter++;
-
-                // Update X-axis labels
-                ArrayList<String> xValues = new ArrayList<>();
-                for (int i = 0; i < datesList.size(); i++) {
-                    xValues.add(String.valueOf(i));
-                }
-                XAxis xAxis = barChart.getXAxis();
-                xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
-            }
-        }
-    }
-
     private class LoadDataFromDatabaseTask extends AsyncTask<Void, Void, List<ProgressUser>> {
         @Override
         protected List<ProgressUser> doInBackground(Void... voids) {
-            // Lakukan query ke database untuk mengambil semua entri ProgressUser
             return appDatabase.progressUserDao().getAll();
-        }
-
-        @Override
-        protected void onPostExecute(List<ProgressUser> progressUsers) {
-            super.onPostExecute(progressUsers);
-
-            // Tambahkan setiap entri dari database ke dalam grafik
-            for (ProgressUser progressUser : progressUsers) {
-                addChartEntry(progressUser.getBmi());
-            }
         }
     }
 }
