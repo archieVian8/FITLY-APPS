@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.RecordFoodActivity">
+
+    <ImageView
+        android:id="@+id/ivBackground"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        app:layout_constraintEnd_toEndOf="@+id/ivBlock"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="@+id/ivBlock"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ayambakargede" />
+
+    <ImageView
+        android:id="@+id/ivBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/ivMenubar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/block" />
+
+    <ImageView
+        android:id="@+id/ivMenubar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Menubar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/menubar" />
+
+    <ImageView
+        android:id="@+id/ivBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="134dp"
+        app:layout_constraintEnd_toEndOf="@+id/ivBlock"
+        app:layout_constraintStart_toStartOf="@+id/ivBlock"
+        app:layout_constraintTop_toTopOf="@+id/ivBlock"
+        app:srcCompat="@drawable/rectangle_4138" />
+
+    <TextView
+        android:id="@+id/tvRecordMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Nasi Goreng"
+        android:textColor="#383838"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/ivBlock"
+        app:layout_constraintTop_toBottomOf="@+id/ivBar" />
+
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Nasi yang digoreng digoreng digoreng digoreng digoreng digoreng digoreng digoreng digoreng "
+        android:textColor="#999999"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/tvRecordMenu"
+        app:layout_constraintTop_toBottomOf="@+id/tvRecordMenu" />
+
+    <TextView
+        android:id="@+id/tvIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Ingredients"
+        android:textColor="#383838"
+        app:layout_constraintStart_toStartOf="@+id/tvDescription"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+
+    <TextView
+        android:id="@+id/tvResep1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="&#8226; Nasi"
+        android:textColor="#999999"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/tvIngredients"
+        app:layout_constraintTop_toBottomOf="@+id/tvIngredients" />
+
+    <TextView
+        android:id="@+id/tvResep2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="&#8226; Telur"
+        android:textColor="#999999"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/tvResep1"
+        app:layout_constraintTop_toBottomOf="@+id/tvResep1" />
+
+    <TextView
+        android:id="@+id/tvResep3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/_8226_digoreng"
+        android:textColor="#999999"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/tvResep2"
+        app:layout_constraintTop_toBottomOf="@+id/tvResep2" />
+
+    <TextView
+        android:id="@+id/tvResep4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="&#8226; Enak"
+        android:textColor="#999999"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/tvResep3"
+        app:layout_constraintTop_toBottomOf="@+id/tvResep3" />
+
+    <TextView
+        android:id="@+id/tvEvidence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/upload_your_evidence"
+        android:textColor="#383838"
+        app:layout_constraintStart_toStartOf="@+id/tvResep4"
+        app:layout_constraintTop_toBottomOf="@+id/tvResep4" />
+
+    <ImageButton
+        android:id="@+id/ibUploadFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="115dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="117dp"
+        android:background="@null"
+        android:contentDescription="@string/uploadbtn"
+        android:src="@drawable/upload"
+        app:layout_constraintEnd_toEndOf="@+id/ivBlock"
+        app:layout_constraintStart_toStartOf="@+id/ivBlock"
+        app:layout_constraintTop_toBottomOf="@+id/tvEvidence" />
+
+    <EditText
+        android:id="@+id/etProblem"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:autofillHints=""
+        android:background="@drawable/bg_input"
+        android:ems="10"
+        android:fontFamily="@font/poppins_semibold"
+        android:hint="Problem with this food"
+        android:inputType="text"
+        android:paddingStart="15dp"
+        android:textColor="@color/younggrey"
+        android:textColorHint="@color/younggrey"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/ivBlock"
+        app:layout_constraintStart_toStartOf="@+id/ivBlock"
+        app:layout_constraintTop_toBottomOf="@+id/ibUploadFoto" />
+
+    <ImageButton
+        android:id="@+id/ibConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="52dp"
+        android:background="@null"
+        android:contentDescription="confirmbtn"
+        android:src="@drawable/confirm"
+        app:layout_constraintEnd_toEndOf="@+id/etProblem"
+        app:layout_constraintTop_toBottomOf="@+id/etProblem" />
+
+    <ImageButton
+        android:id="@+id/ibCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginEnd="36dp"
+        android:background="@null"
+        android:contentDescription="cancelbtn"
+        android:src="@drawable/cancel"
+        app:layout_constraintEnd_toStartOf="@+id/ibConfirm"
+        app:layout_constraintStart_toStartOf="@+id/etProblem"
+        app:layout_constraintTop_toTopOf="@+id/ibConfirm" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
