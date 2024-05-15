@@ -24,6 +24,20 @@ menghapus item ini?</string>
     <string name="added">Satu item berhasil ditambahkan</string>
     <string name="changed">Satu item berhasil diubah</string>
     <string name="deleted">Satu item berhasil dihapus</string>
+    <string name="pick_your_food">Pick Your Food!</string>
+    <string name="profile">PROFILE</string>
+    <string name="your_bmi_is_normal_you_can_eat_what_you_wish">Your BMI is normal. You can eat what you wish!</string>
+    <string name="menu">Menu</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="nasi_goreng">Nasi Goreng</string>
+    <string name="checkbreaky1">checkBreaky1</string>
+    <string name="checkbreaky2">checkBreaky2</string>
+    <string name="checkbreaky3">checkBreaky3</string>
+    <string name="tumis_tahu_sayur"><![CDATA[Tumis Tahu & Sayur]]></string>
+    <string name="sup_ayam_pangsit"><![CDATA[Sup Ayam & Pangsit]]></string>
+    <string name="uploadbtn">uploadbtn</string>
+    <string name="upload_your_evidence">Upload your evidence</string>
+    <string name="_8226_digoreng">• Digoreng</string>
     <string-array name="gender">
         <item>male</item>
         <item>female</item>
