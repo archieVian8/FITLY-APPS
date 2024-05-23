@@ -83,12 +83,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="409dp"
-        android:layout_height="524dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp"
+    <fragment
+        android:id="@+id/fragment_exercise"
+        android:name="com.example.projectfitlyp4.ExerciseFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/nav_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
