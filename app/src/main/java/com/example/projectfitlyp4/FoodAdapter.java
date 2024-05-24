@@ -15,7 +15,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.projectfitlyp4.database.Food;
 import com.example.projectfitlyp4.databinding.RowMakananBinding;
-import com.example.projectfitlyp4.ui.RecordFoodActivity;
+import com.example.projectfitlyp4.ui.BreakfastFragment;
+import com.example.projectfitlyp4.ui.RecordMakananFragment;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
                             .skipMemoryCache(true))
                     .into(binding.ivBreaky);
             binding.clBreaky.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), RecordFoodActivity.class);
+                Intent intent = new Intent(v.getContext(), RecordMakananFragment.class);
                 intent.putExtra("bmenu", food.getNama());
                 intent.putExtra("bdesc", food.getDescription());
                 intent.putExtra("bingredient", food.getIngredients());

@@ -31,9 +31,6 @@
             android:name=".ui.SignInActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.RecordFoodActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.RecommendFoodActivity"
             android:exported="false" />
         <activity
