@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "489197928452",
+    "project_id": "fitly-apps",
+    "storage_bucket": "fitly-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489197928452:android:bbe52482ef6d2a5bbdf551",
+        "android_client_info": {
+          "package_name": "com.example.projectfitlyp4"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-ECmwvmtEqBEwm2Sgx7Kf4YJsZrJRB24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
