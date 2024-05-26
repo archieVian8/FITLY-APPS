@@ -7,10 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projectfitlyp4.database.AppDatabase;
+import com.example.projectfitlyp4.database.FirebaseProgressUserDao;
 import com.example.projectfitlyp4.database.ProgressUser;
+
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -19,12 +23,14 @@ public class ProgressUserAdapter extends RecyclerView.Adapter<ProgressUserAdapte
     private List<ProgressUser> progressUserList;
     private Context context;
     private AppDatabase appDatabase;
+    private FirebaseProgressUserDao firebaseProgressUserDao;
     private DecimalFormat decimalFormat;
 
-    public ProgressUserAdapter(List<ProgressUser> progressUserList, Context context) {
+    public ProgressUserAdapter(List<ProgressUser> progressUserList, Context context, FirebaseProgressUserDao firebaseProgressUserDao) {
         this.progressUserList = progressUserList;
         this.context = context;
         appDatabase = AppDatabase.getInstance(context);
+        this.firebaseProgressUserDao = firebaseProgressUserDao;
     }
 
     public void setDecimalFormat(DecimalFormat format) {
@@ -49,11 +55,6 @@ public class ProgressUserAdapter extends RecyclerView.Adapter<ProgressUserAdapte
         return progressUserList.size();
     }
 
-    public void setProgressUserList(List<ProgressUser> progressUserList) {
-        this.progressUserList = progressUserList;
-        notifyDataSetChanged();
-    }
-
     public class ProgressUserViewHolder extends RecyclerView.ViewHolder {
         private TextView tvDate, tvWeight, tvHeight, tvBMI;
         private ImageButton btnDelete;
@@ -75,38 +76,34 @@ public class ProgressUserAdapter extends RecyclerView.Adapter<ProgressUserAdapte
                         progressUserList.remove(position);
                         notifyItemRemoved(position);
                         new DeleteDataTask(context, appDatabase, progressUserToDelete).execute();
+                        firebaseProgressUserDao.deleteProgressUserFromFirebase(progressUserToDelete);
                     }
                 }
             });
         }
 
         public void bind(ProgressUser progressUser) {
-            tvDate.setText("Date: " + progressUser.getDate());
-            tvWeight.setText("Weight: " + progressUser.getWeight() + " kg");
-            tvHeight.setText("Height: " + progressUser.getHeight() + " m");
-            if (decimalFormat != null) {
-                String formattedBMI = decimalFormat.format(progressUser.getBmi());
-                tvBMI.setText("BMI: " + formattedBMI);
-            } else {
-                tvBMI.setText("BMI: " + progressUser.getBmi());
-            }
+            tvDate.setText(progressUser.getDate());
+            tvWeight.setText(String.format("%s kg", decimalFormat.format(progressUser.getWeight())));
+            tvHeight.setText(String.format("%s cm", decimalFormat.format(progressUser.getHeight())));
+            tvBMI.setText(String.format("%s", decimalFormat.format(progressUser.getBmi())));
         }
     }
 
     private static class DeleteDataTask extends AsyncTask<Void, Void, Void> {
-        private WeakReference<Context> contextReference;
+        private WeakReference<Context> contextRef;
         private AppDatabase appDatabase;
-        private ProgressUser progressUserToDelete;
+        private ProgressUser progressUser;
 
-        DeleteDataTask(Context context, AppDatabase database, ProgressUser progressUser) {
-            contextReference = new WeakReference<>(context);
-            appDatabase = database;
-            progressUserToDelete = progressUser;
+        DeleteDataTask(Context context, AppDatabase appDatabase, ProgressUser progressUser) {
+            contextRef = new WeakReference<>(context);
+            this.appDatabase = appDatabase;
+            this.progressUser = progressUser;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            appDatabase.progressUserDao().delete(progressUserToDelete);
+            appDatabase.progressUserDao().deleteByFirebaseId(progressUser.getFirebaseId());
             return null;
         }
     }

@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.projectfitlyp4.database.AppDatabase;
+import com.example.projectfitlyp4.database.FirebaseProgressUserDao;
 import com.example.projectfitlyp4.database.ProgressUser;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -28,6 +30,7 @@ public class BarChartFragment extends Fragment {
     private AppDatabase appDatabase;
     private ArrayList<String> datesList = new ArrayList<>();
     private int counter = 1;
+    private FirebaseProgressUserDao firebaseProgressUserDao;
 
     @Nullable
     @Override
@@ -37,9 +40,29 @@ public class BarChartFragment extends Fragment {
         barChart = view.findViewById(R.id.bar_chart);
 
         appDatabase = AppDatabase.getInstance(requireContext());
+        firebaseProgressUserDao = new FirebaseProgressUserDao(requireContext());
 
-        new LoadDataFromDatabaseTask().execute();
+        loadDataFromBothSources();
+
         return view;
+    }
+
+    private void loadDataFromBothSources() {
+        new LoadDataFromDatabaseTask().execute();
+        firebaseProgressUserDao.getAllProgressUsersFromFirebase(new FirebaseProgressUserDao.FirebaseProgressUserCallback() {
+            @Override
+            public void onDataLoaded(List<ProgressUser> progressUsers) {
+                List<ProgressUser> combinedData = new ArrayList<>();
+                combinedData.addAll(progressUsers);
+                // Combine data dari Room database dan Firebase data di sini
+                setupChart(combinedData);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
     }
 
     private void setupChart(List<ProgressUser> progressUsers) {
@@ -61,24 +84,28 @@ public class BarChartFragment extends Fragment {
         barChart.getDescription().setText("BMI LOG");
 
         // Set fixed size for X-axis
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(11f);
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(datesList));
+        barChart.getXAxis().setAxisMinimum(0f);
+        barChart.getXAxis().setAxisMaximum(11f);
+        barChart.getXAxis().setGranularity(1f);
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(datesList));
     }
 
-    private class LoadDataFromDatabaseTask extends AsyncTask<Void, Void, List<ProgressUser>> {
+    private class LoadDataFromDatabaseTask extends AsyncTask<Void, Void, LiveData<List<ProgressUser>>> {
         @Override
-        protected List<ProgressUser> doInBackground(Void... voids) {
-            return appDatabase.progressUserDao().getAll();
+        protected LiveData<List<ProgressUser>> doInBackground(Void... voids) {
+            return appDatabase.progressUserDao().getAllProgressUsers();
         }
 
         @Override
-        protected void onPostExecute(List<ProgressUser> progressUsers) {
+        protected void onPostExecute(LiveData<List<ProgressUser>> progressUsers) {
             super.onPostExecute(progressUsers);
 
-            setupChart(progressUsers);
+            progressUsers.observe(getViewLifecycleOwner(), new Observer<List<ProgressUser>>() {
+                @Override
+                public void onChanged(List<ProgressUser> progressUsers) {
+                }
+            });
         }
     }
 }
+
