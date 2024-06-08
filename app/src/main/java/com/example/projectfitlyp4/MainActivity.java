@@ -1,12 +1,6 @@
 package com.example.projectfitlyp4;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.room.Room;
-
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -15,15 +9,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
+
 import com.example.projectfitlyp4.database.AppDatabase;
+import com.example.projectfitlyp4.database.FirebaseProgressUserDao;
 import com.example.projectfitlyp4.database.ProgressUser;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> datesList = new ArrayList<>();
     int counter = 1;
     boolean dataEnteredToday = false;
+    private FirebaseProgressUserDao firebaseProgressUserDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
         tvDateView = findViewById(R.id.tvDateView);
 
         appDatabase = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "progress_database").build();
+                        AppDatabase.class, "progress_database")
+                .addMigrations(AppDatabase.MIGRATION_1_2)
+                .build();
+
+        firebaseProgressUserDao = new FirebaseProgressUserDao(this);
 
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +169,15 @@ public class MainActivity extends AppCompatActivity {
         new InsertDataTask().execute(progressUser);
     }
 
+    private class InsertDataTask extends AsyncTask<ProgressUser, Void, Void> {
+        @Override
+        protected Void doInBackground(ProgressUser... progressUsers) {
+            appDatabase.progressUserDao().insert(progressUsers[0]);
+            firebaseProgressUserDao.insertProgressUserToFirebase(progressUsers[0]);
+            return null;
+        }
+    }
+
     private void resetInputs() {
         etWeight.setText("");
         etHeight.setText("");
@@ -179,18 +185,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "Data deleted, please enter new data", Toast.LENGTH_SHORT).show();
     }
 
-    private class InsertDataTask extends AsyncTask<ProgressUser, Void, Void> {
-        @Override
-        protected Void doInBackground(ProgressUser... progressUsers) {
-            appDatabase.progressUserDao().insert(progressUsers[0]);
-            return null;
-        }
-    }
-
     private class LoadDataFromDatabaseTask extends AsyncTask<Void, Void, List<ProgressUser>> {
         @Override
         protected List<ProgressUser> doInBackground(Void... voids) {
-            return appDatabase.progressUserDao().getAll();
+            return null;
         }
     }
 }
