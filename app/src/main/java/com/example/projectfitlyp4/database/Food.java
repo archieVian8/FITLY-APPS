@@ -4,6 +4,10 @@ public class Food {
 
     private String namaMenu, KALORIMAKANAN, menuTime, description, ingredients, foto;
 
+    public Food() {
+
+    }
+
     public Food(String namaMenu, String KALORIMAKANAN, String menuTime, String description, String ingredients, String foto) {
         this.namaMenu = namaMenu;
         this.KALORIMAKANAN = KALORIMAKANAN;
@@ -13,15 +17,15 @@ public class Food {
         this.foto = foto;
     }
 
-    public String getNama() {
+    public String getNamaMenu() {
         return namaMenu;
     }
 
-    public void setNama(String namaMenu) {
+    public void setNamaMenu(String namaMenu) {
         this.namaMenu = namaMenu;
     }
 
-    public String getKalori() {
+    public String getKALORIMAKANAN() {
         return KALORIMAKANAN;
     }
 

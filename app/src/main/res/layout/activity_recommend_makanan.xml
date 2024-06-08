@@ -124,18 +124,6 @@
         app:layout_constraintStart_toStartOf="@+id/tvDinner"
         app:layout_constraintTop_toBottomOf="@id/tvDinner" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/container_record"
-        android:name="com.example.projectfitlyp4.ui.RecordMakananFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
