@@ -5,6 +5,10 @@ public class Exercise {
     private String name;
     private String calorieCount;
 
+    public Exercise() {
+        // Constructor kosong diperlukan untuk Firebase
+    }
+
     public Exercise(int imageResId, String name, String calorieCount) {
         this.imageResId = imageResId;
         this.name = name;
