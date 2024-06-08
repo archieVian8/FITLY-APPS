@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,9 +19,20 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.projectfitlyp4.R;
 import com.example.projectfitlyp4.database.ProfileHistory;
+import com.example.projectfitlyp4.database.User;
 import com.example.projectfitlyp4.databinding.ActivityProfileEditBinding;
 import com.example.projectfitlyp4.helper.DateHelper;
 import com.example.projectfitlyp4.helper.ViewModelFactory;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ProfileEditActivity extends AppCompatActivity {
@@ -33,9 +45,10 @@ public class ProfileEditActivity extends AppCompatActivity {
     private ProfileHistory profileHistory;
     private ProfileHistoryProfileEditViewModel profileHistoryProfileEditViewModel;
     private ActivityProfileEditBinding binding;
-    EditText etName, etEmail;
+    EditText etName, etEmail, etPassword;
     Spinner spinGender;
     Button btConfirm, btCancel;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,17 +56,10 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
         btConfirm = findViewById(R.id.btConfirm);
         btCancel = findViewById(R.id.btCancel);
-        spinGender = findViewById(R.id.spinGender);
-        Spinner spinner = (Spinner) findViewById(R.id.spinGender);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.gender,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        mAuth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
@@ -64,11 +70,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         etName.setText(name);
         etEmail.setText(email);
 
-        // Memilih gender dalam spinner
-        if (gender != null) {
-            int spinnerPosition = adapter.getPosition(gender);
-            spinGender.setSelection(spinnerPosition);
-        }
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,34 +105,93 @@ public class ProfileEditActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(actionBarTitle);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        binding.btConfirm.setText(btnTitle);
-        binding.btConfirm.setOnClickListener(view -> {
-            String title =
-                    binding.etName.getText().toString().trim();
-            String description =
-                    binding.etEmail.getText().toString().trim();
-            if (title.isEmpty()) {
-                binding.etName.setError(getString(R.string.empty));
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
 
-            } else if (description.isEmpty()) {
-                binding.etEmail.setError(getString(R.string.empty));
-            } else {
-                profileHistory.setFromName(title);
-                profileHistory.setToName(description);
-                Intent intent2 = new Intent();
-                intent.putExtra(EXTRA_NOTE, profileHistory);
-                if (isEdit) {
-                    profileHistoryProfileEditViewModel.update(profileHistory);
-                    showToast(getString(R.string.changed));
-                } else {
-                    profileHistory.setDate(DateHelper.getCurrentDate());
-                    profileHistoryProfileEditViewModel.insert(profileHistory);
-                    showToast(getString(R.string.added));
-
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Assume User class has the same fields as the database
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        binding.etName.setText(user.getName());
+                        binding.etEmail.setText(user.getEmail());
+                    }
                 }
-                finish();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        binding.spinGender.setAdapter(adapter);
+        binding.spinGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                Toast.makeText(parent.getContext(), "Selected: " + selectedItem, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+        binding.btConfirm.setText(btnTitle);
+        binding.btConfirm.setOnClickListener(view -> {
+            String etName = binding.etName.getText().toString().trim();
+            String etEmail = binding.etEmail.getText().toString().trim();
+            String spinGender = binding.spinGender.getSelectedItem().toString();
+
+            if (etName.isEmpty()) {
+                binding.etName.setError(getString(R.string.empty));
+            } else if (etEmail.isEmpty()) {
+                binding.etEmail.setError(getString(R.string.empty));
+            } else {
+                profileHistory.setFromName(etName);
+                profileHistory.setToName(etEmail);
+
+                if (currentUser != null) {
+                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+
+                    // Create a map of values to update
+                    Map<String, Object> userUpdates = new HashMap<>();
+                    userUpdates.put("name", etName);
+                    userUpdates.put("email", etEmail);
+                    userUpdates.put("gender", spinGender);
+
+                    // Update the user data in Firebase
+                    userReference.updateChildren(userUpdates).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if (isEdit) {
+                                profileHistoryProfileEditViewModel.update(profileHistory);
+                                showToast(getString(R.string.changed));
+                            } else {
+                                profileHistory.setDate(DateHelper.getCurrentDate());
+                                profileHistoryProfileEditViewModel.insert(profileHistory);
+                                showToast(getString(R.string.added));
+                            }
+                            finish();
+                        } else {
+                            showToast("Eror");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
