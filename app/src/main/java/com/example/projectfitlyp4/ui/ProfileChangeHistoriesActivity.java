@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.projectfitlyp4.R;
 import com.example.projectfitlyp4.databinding.ActivityProfileChangeHistoriesBinding;
@@ -44,10 +45,10 @@ public class ProfileChangeHistoriesActivity extends AppCompatActivity {
                 LinearLayoutManager(this));
         binding.rvNotes.setHasFixedSize(true);
         binding.rvNotes.setAdapter(adapter);
-        binding.fabAdd.setOnClickListener(view -> {
-            if (view.getId() == R.id.fab_add) {
-                Intent intent = new Intent(ProfileChangeHistoriesActivity.this,
-                        ProfileEditActivity.class);
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileChangeHistoriesActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
         });
